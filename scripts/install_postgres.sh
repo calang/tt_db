@@ -16,5 +16,16 @@ if [ "$EUID" -ne 0 ]
 fi
 
 
+echo "--- Installing Postgres ---"
+
+echo "Updating package lists"
 apt-get update
+
+echo "Installing Postgres and contrib packages"
 apt-get install -y postgresql postgresql-contrib
+
+echo "Starting Postgres service"
+systemctl start postgresql
+
+echo "Testing Postgres installation"
+systemctl status postgresql | grep "active" >/dev/null
