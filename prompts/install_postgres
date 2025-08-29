@@ -1,1 +1,10 @@
-Edit the Makefile at the root of this repo 
+Edit the Makefile at the root of this git repository
+to ensure there is a target called "install_db"
+whose purpose is to install PostgreSQL in the current node
+
+- Use the apt-get package manager
+- call the installation script using a single sudo command from the Makefile
+- Create auxiliary installation bash script in the scripts folder, called install_postgres.sh
+- use the lines in the config/bash_prologue file as prefix to the contents of install_postgres.sh, replacing _module_name_ with postgres
+
+
