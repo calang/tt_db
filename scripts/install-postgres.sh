@@ -24,6 +24,10 @@ apt-get update
 echo "Installing Postgres and contrib packages"
 apt-get install -y postgresql postgresql-contrib
 
+echo "Enable PostgreSQL to start automatically at system boot time"
+systemctl enable postgresql
+# or systemctl disable postgresql, to disable this function
+
 echo "Starting Postgres service"
 systemctl start postgresql
 

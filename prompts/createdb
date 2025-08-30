@@ -1,0 +1,27 @@
+produce SQL statements to instantiate a table described like this:
+
+schema: public
+table profesor:
+description: "Table storing professor information"
+columns:
+- nombre:
+    type: varchar(100)
+    not_null: true
+- apellido:
+    type: varchar(100)
+    not_null: true
+- id:
+    type: serial
+    not_null: true
+- email:
+    type: varchar(255)
+    not_null: true
+primary_key:
+profesor_pk:
+columns: ['id']
+unique_constraints:
+profesor_email_unique:
+columns: ['email']
+indexes:
+profesor_nombre_idx:
+columns: ['nombre', 'apellido']

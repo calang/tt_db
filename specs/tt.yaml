@@ -1,0 +1,54 @@
+extension plpgsql:
+  description: PL/pgSQL procedural language
+  owner: postgres
+  schema: pg_catalog
+  version: '1.0'
+schema public:
+  description: standard public schema
+  owner: pg_database_owner
+  privileges:
+  - PUBLIC:
+    - usage
+  - pg_database_owner:
+    - all
+  sequence professor_id_seq:
+    cache_value: 1
+    data_type: integer
+    increment_by: 1
+    max_value: 2147483647
+    min_value: null
+    owner: calang
+    owner_column: id
+    owner_table: professor
+    start_value: 1
+  table professor:
+    columns:
+    - id:
+        default: nextval('public.professor_id_seq'::regclass)
+        not_null: true
+        type: integer
+    - nombre:
+        not_null: true
+        type: character varying(100)
+    - apellido:
+        not_null: true
+        type: character varying(100)
+    - email:
+        not_null: true
+        type: character varying(255)
+    description: Table storing professor information
+    indexes:
+      professor_nombre_idx:
+        keys:
+        - nombre
+        - apellido
+    owner: calang
+    primary_key:
+      professor_pk:
+        columns:
+        - id
+    unique_constraints:
+      professor_email_unique:
+        columns:
+        - email
+

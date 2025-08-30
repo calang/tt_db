@@ -10,7 +10,8 @@ BRANCH := $(shell git branch --show-current)
 # :=  uses immediate substitution
 
 # ENV_NAME is second word, separated by one space, in file env.yml
-# ENV_NAME := $(shell head -1 env.yml | cut -d ' ' -f 2)
+ENV_NAME := $(shell head -1 env.yml | cut -d ' ' -f 2)
+DB_NAME := tt
 
 
 # target: help - Display callable targets.
@@ -22,12 +23,17 @@ help:
 
 
 # target: install_postgres - install and setup postgres db
-install_postgres:
-	sudo ./scripts/install_postgres.sh
+install-postgres:
+	sudo ./scripts/install-postgres.sh
 
 # target: setup_db - create db and user
-setup_db:
+setup-db:
 	sudo ./scripts/setupdb.sh
+
+# target: update_db - update db
+update-db:
+	yamltodb --update ${DB_NAME} specs/${DB_NAME}.yaml
+
 
 # # target: .venv - create local venv
 # .venv:	ALWAYS
@@ -38,13 +44,13 @@ setup_db:
 requirements:	ALWAYS
 	pip install --upgrade -r requirements.txt
 
-# # target: update-env - update conda environment based on latest content of environment.yml file
-# update-env:
-# 	conda env update -f env.yml
+# target: update-env - update conda environment based on latest content of environment.yml file
+update-env:
+	conda env update -f env.yml
 
-# # target: rm-env - update conda environment based on latest content of environment.yml file
-# rm-env:
-# 	conda env remove -n ${ENV_NAME}
+# target: rm-env - update conda environment based on latest content of environment.yml file
+rm-env:
+	conda env remove -n ${ENV_NAME}
 
 # target: jupl - start jupiter lab server
 jupl:	ALWAYS
