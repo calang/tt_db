@@ -4,7 +4,9 @@ storing the app params defined in the corresponding yaml file
 """
 
 import yaml
+from pathlib import Path
 from src.utils.singleton import Singleton
+
 
 class Params(metaclass=Singleton):
     def __init__(self):
@@ -13,8 +15,14 @@ class Params(metaclass=Singleton):
     
     def _load_params(self):
         """Load parameters from params.yaml file"""
+
+        # Path of the current script file
+        package_dir = Path(__file__).parent
+        # Path to the YAML file in the same directory
+        yaml_file_path = package_dir / 'params.yaml'
+
         try:
-            with open('config/params.yaml', 'r') as f:
+            with open(yaml_file_path, 'r') as f:
                 self.params = yaml.safe_load(f)
         except FileNotFoundError:
             raise FileNotFoundError("params.yaml not found")
