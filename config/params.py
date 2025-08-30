@@ -10,6 +10,7 @@ from src.utils.singleton import Singleton
 
 class Params(dict, metaclass=Singleton):
     def __init__(self):
+        super().__init__()
         self._load_params()
     
     def _load_params(self):
