@@ -3,14 +3,13 @@ Params class with single instance
 storing the app params defined in the corresponding yaml file
 """
 
-import yaml
 from pathlib import Path
+import yaml
 from src.utils.singleton import Singleton
 
 
-class Params(metaclass=Singleton):
+class Params(dict, metaclass=Singleton):
     def __init__(self):
-        self.params = {}
         self._load_params()
     
     def _load_params(self):
@@ -23,15 +22,6 @@ class Params(metaclass=Singleton):
 
         try:
             with open(yaml_file_path, 'r') as f:
-                self.params = yaml.safe_load(f)
+                self.update(yaml.safe_load(f))
         except FileNotFoundError:
             raise FileNotFoundError("params.yaml not found")
-    
-    def get(self, key, default=None):
-        """Get a parameter value by key"""
-        return self.params.get(key, default)
-    
-    def __getitem__(self, key):
-        """Allow dictionary-style access to parameters"""
-        return self.params[key]
-
