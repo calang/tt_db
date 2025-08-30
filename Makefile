@@ -22,17 +22,17 @@ help:
 	@egrep -h "^# target:" [Mm]akefile | sed -e 's/^# target: //'
 
 
-# target: install_postgres - install and setup postgres db
-install-postgres:
-	sudo ./scripts/install-postgres.sh
-
-# target: setup_db - create db and user
-setup-db:
-	sudo ./scripts/setupdb.sh
-
-# target: update_db - update db
-update-db:
-	yamltodb --update ${DB_NAME} specs/${DB_NAME}.yaml
+## target: install_postgres - install and setup postgres db
+#install-postgres:
+#	sudo ./scripts/install-postgres.sh
+#
+## target: setup_db - create db and user
+#setup-db:
+#	sudo ./scripts/setupdb.sh
+#
+## target: update_db - update db
+#update-db:
+#	yamltodb --update ${DB_NAME} specs/${DB_NAME}.yaml
 
 
 # # target: .venv - create local venv
