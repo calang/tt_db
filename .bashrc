@@ -4,4 +4,4 @@ WD=$(pwd)
 
 export PYTHONPATH=${WD}
 
-conda activate ttdb
+[ "$CONDA_DEFAULT_ENV" = "ttdb" ] || conda activate ttdb
