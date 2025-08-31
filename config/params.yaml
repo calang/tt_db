@@ -1,5 +1,6 @@
 ---
 db_spec_schema: specs/db_spec_schema.yaml
+tt_spec: specs/tt.yaml
 
 
 

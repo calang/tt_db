@@ -5,126 +5,124 @@ description: "Spec for a data base"
 type: object
 required: [ DatabaseSpec ]
 properties:
-
   DatabaseSpec:
     type: object
     properties:
       schemas:
         type: array
         items:
-          $ref: '#/components/schemas/SchemaSpec'
+          $ref: '#/SchemaSpec'
       tables:
         type: array
         items:
-          $ref: '#/components/schemas/TableSpec'
+          $ref: '#/TableSpec'
       foreign_keys:
         type: array
         items:
-          $ref: '#/components/schemas/ForeignKeySpec'
-    required: ['schemas', 'tables']
+          $ref: '#/ForeignKeySpec'
+#    required: ['schemas', 'tables']
 
+SchemaSpec:
+  type: object
+  properties:
+    name:
+      type: string
+#    owner:
+#      type: string
+#    grants:
+#      type: array
+#      items:
+#        $ref: '#/GrantSpec'
+  required: ['name']
 
-  SchemaSpec:
-    type: object
-    properties:
-      name:
-        type: string
-      owner:
-        type: string
-      grants:
-        type: array
-        items:
-          $ref: '#/components/schemas/GrantSpec'
-    required: ['name']
+TableSpec:
+  type: object
+  properties:
+    schema:
+      type: string
+      description: Schema name for the table
+      default: public
+    name:
+      type: string
+    columns:
+      type: array
+      items:
+        $ref: '#/ColumnSpec'
+    constraints:
+      type: array
+      items:
+        $ref: '#/ConstraintSpec'
+#    owner:
+#      type: string
+#    grants:
+#      type: array
+#      items:
+#        $ref: '#/GrantSpec'
+  required: ['name', 'columns']
 
-  GrantSpec:
-    type: object
-    properties:
-      role:
+ColumnSpec:
+  type: object
+  properties:
+    name:
+      type: string
+    type:
+      "enum": ["string", "number", "boolean"]
+    default:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+    not_null:
+      type: boolean
+    unique:
+      type: boolean
+  required: ['name', 'type']
+
+ConstraintSpec:
+  type: object
+  properties:
+    type:
+      type: string
+      enum: ['PRIMARY KEY', 'FOREIGN KEY', 'CHECK', 'UNIQUE']
+    columns:
+      type: array
+      items:
         type: string
-      privileges:
-        type: array
-        items:
+    expression:
+      type: string
+
+ForeignKeySpec:
+  type: object
+  properties:
+    table:
+      type: string
+    columns:
+      type: array
+      items:
+        type: string
+    references:
+      type: object
+      properties:
+        schema:
           type: string
-      with_grant_option:
-        type: boolean
-
-  TableSpec:
-    type: object
-    properties:
-      schema:
-        type: string
-        description: Schema name for the table
-        default: public
-      name:
-        type: string
-      owner:
-        type: string
-      columns:
-        type: array
-        items:
-          $ref: '#/components/schemas/ColumnSpec'
-      grants:
-        type: array
-        items:
-          $ref: '#/components/schemas/GrantSpec'
-      constraints:
-        type: array
-        items:
-          $ref: '#/components/schemas/ConstraintSpec'
-    required: ['name', 'columns']
-
-  ColumnSpec:
-    type: object
-    properties:
-      name:
-        type: string
-      type:
-        type: string
-      not_null:
-        type: boolean
-      default:
-        oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-      unique:
-        type: boolean
-
-    required: ['name', 'type']
-
-  ConstraintSpec:
-    type: object
-    properties:
-      type:
-        type: string
-        enum: ['PRIMARY KEY', 'FOREIGN KEY', 'CHECK', 'UNIQUE']
-      columns:
-        type: array
-        items:
+          default: public
+        table:
           type: string
-      expression:
-        type: string
-
-  ForeignKeySpec:
-    type: object
-    properties:
-      table:
-        type: string
-      columns:
-        type: array
-        items:
-          type: string
-      references:
-        type: object
-        properties:
-          schema:
+        columns:
+          type: array
+          items:
             type: string
-          table:
-            type: string
-          columns:
-            type: array
-            items:
-              type: string
-        required: ['table', 'columns']
-    required: ['table', 'columns', 'references']
+      required: ['table', 'columns']
+  required: ['table', 'columns', 'references']
+
+#GrantSpec:
+#  type: object
+#  properties:
+#    role:
+#      type: string
+#    privileges:
+#      type: array
+#      items:
+#        type: string
+#    with_grant_option:
+#      type: boolean

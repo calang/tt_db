@@ -26,3 +26,6 @@ class Params(dict, metaclass=Singleton):
                 self.update(yaml.safe_load(f))
         except FileNotFoundError:
             raise FileNotFoundError("params.yaml not found")
+
+params = Params()
+"""Single in-RAM structure to retrieve params from"""
