@@ -4,7 +4,7 @@
     lecc_por_sem/1,
     lecc_por_dia/1,
     grupo/2,
-    aula/2,
+    % aula/2,
     prof/2,
     grupo_materia_lecciones/4,
     prof_grupo_materia/3,
@@ -33,14 +33,14 @@ grupo(6, 4).
 grupo(7, 5).
 grupo(8, 6).
 
-% aula(?Id:int, ?Aula:atomic).
-aula(1, inter).
-aula(2, trans).
-aula(3, 1).
-aula(4, 2).
-aula(5, 3).
-aula(6, 4).
-aula(7, 5).
+% % aula(?Id:int, ?Aula:atomic).
+% aula(1, inter).
+% aula(2, trans).
+% aula(3, 1).
+% aula(4, 2).
+% aula(5, 3).
+% aula(6, 4).
+% aula(7, 5).
 
 % prof(?Id:int, ?Profesor:atom).
 prof(1, alisson).
