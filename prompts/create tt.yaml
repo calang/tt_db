@@ -1,0 +1,7 @@
+Produce a timetable data base spec YAML file, similar to tt-sample.yaml,
+following the spec in db_spec_schema.yaml
+which corresponds to a sqlite data base
+that can be used to store the rows represented
+by the Prolog predicates in timetable_base.pl,
+creating one table to store the values corresponding to each of the predicates.
+Store the data base spec in a file called tt.yaml in the specs folder.

@@ -1,0 +1,43 @@
+---
+DatabaseSpec:
+  schemas:
+    - name: s1
+
+  tables:
+    - name: t1
+      columns:
+        - name: c1
+          type: number
+          not_null: true
+        - name: c2
+          type: number
+        - name: c3
+          type: boolean
+          default: false
+        - name: c4
+          type: string
+      constraints:
+        - type: CHECK
+          expression: c2 > 123
+        - type: PRIMARY KEY
+          columns: [c1]
+
+    - schema: s1
+      name: t2
+      columns:
+        - name: c21
+          type: number
+          not_null: true
+        - name: c22
+          type: string
+      constraints:
+        - type: PRIMARY KEY
+          columns: [c21]
+
+  foreign_keys:
+    - table: t1
+      columns: [c2]
+      references:
+        schema: s1
+        table: t2
+        columns: [c21]

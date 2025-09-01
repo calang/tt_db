@@ -1,43 +1,179 @@
 ---
 DatabaseSpec:
-  schemas:
-    - name: s1
-
   tables:
-    - name: t1
+    - name: constants
       columns:
-        - name: c1
-          type: number
-          not_null: true
-        - name: c2
-          type: number
-        - name: c3
-          type: boolean
-          default: false
-        - name: c4
+        - name: name
           type: string
+          not_null: true
+        - name: value
+          type: integer
+          not_null: true
       constraints:
-        - type: CHECK
-          expression: c2 > 123
         - type: PRIMARY KEY
-          columns: [c1]
+          columns: [name]
 
-    - schema: s1
-      name: t2
+    - name: grupos
       columns:
-        - name: c21
-          type: number
+        - name: id
+          type: integer
           not_null: true
-        - name: c22
+        - name: nombre
           type: string
+          not_null: true
       constraints:
         - type: PRIMARY KEY
-          columns: [c21]
+          columns: [id]
+        - type: UNIQUE
+          columns: [nombre]
+
+    - name: aulas
+      columns:
+        - name: id
+          type: integer
+          not_null: true
+        - name: nombre
+          type: string
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [id]
+        - type: UNIQUE
+          columns: [nombre]
+
+    - name: profesores
+      columns:
+        - name: id
+          type: integer
+          not_null: true
+        - name: nombre
+          type: string
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [id]
+        - type: UNIQUE
+          columns: [nombre]
+
+    - name: grupo_materias
+      columns:
+        - name: id
+          type: integer
+          not_null: true
+        - name: grupo_id
+          type: integer
+          not_null: true
+        - name: materia
+          type: string
+          not_null: true
+        - name: lecciones
+          type: integer
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [id]
+        - type: UNIQUE
+          columns: [grupo_id, materia]
+
+    - name: prof_grupo_materias
+      columns:
+        - name: profesor_id
+          type: integer
+          not_null: true
+        - name: grupo_id
+          type: integer
+          not_null: true
+        - name: materia
+          type: string
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [profesor_id, grupo_id, materia]
+
+    - name: dias
+      columns:
+        - name: nombre
+          type: string
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [nombre]
+
+    - name: bloques
+      columns:
+        - name: numero
+          type: integer
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [numero]
+
+    - name: lecciones
+      columns:
+        - name: id
+          type: string
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [id]
+
+    - name: disponibilidad_profesores
+      columns:
+        - name: profesor_id
+          type: integer
+          not_null: true
+        - name: dia
+          type: string
+          not_null: true
+        - name: bloque
+          type: integer
+          not_null: true
+        - name: leccion
+          type: string
+          not_null: true
+      constraints:
+        - type: PRIMARY KEY
+          columns: [profesor_id, dia, bloque, leccion]
 
   foreign_keys:
-    - table: t1
-      columns: [c2]
+    - table: grupo_materias
+      columns: [grupo_id]
       references:
-        schema: s1
-        table: t2
-        columns: [c21]
+        table: grupos
+        columns: [id]
+
+    - table: prof_grupo_materias
+      columns: [profesor_id]
+      references:
+        table: profesores
+        columns: [id]
+
+    - table: prof_grupo_materias
+      columns: [grupo_id]
+      references:
+        table: grupos
+        columns: [id]
+
+    - table: disponibilidad_profesores
+      columns: [profesor_id]
+      references:
+        table: profesores
+        columns: [id]
+
+    - table: disponibilidad_profesores
+      columns: [dia]
+      references:
+        table: dias
+        columns: [nombre]
+
+    - table: disponibilidad_profesores
+      columns: [bloque]
+      references:
+        table: bloques
+        columns: [numero]
+
+    - table: disponibilidad_profesores
+      columns: [leccion]
+      references:
+        table: lecciones
+        columns: [id]
