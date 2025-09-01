@@ -9,7 +9,7 @@ from src.utils.spec_handling import (
 )
 
 
-def Xtest_schema():
+def test_schema():
     validate_schema(params.get('db_spec_schema'))
 
 

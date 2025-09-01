@@ -43,7 +43,7 @@ def validate_schema(schema_filename: str):
     # load the validation schema
     schema = get_yaml_file_as_dict(schema_filename)
     # validate the validation schema
-    js.Validator.check_schema(schema)
+    js.protocols.Validator.check_schema(schema)
 
 
 def validate_spec_file(spec_filename: str,
