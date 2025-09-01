@@ -1,7 +1,18 @@
 ---
+# This specification creates tables that correspond to each Prolog predicate:
+
+# constantes - For storing lecc_por_sem and lecc_por_dia
+# grupos - For the grupo/2 predicate
+# aulas - For the aula/2 predicate
+# profesores - For the prof/2 predicate
+# grupo_materias - For grupo_materia_lecciones/4
+# prof_grupo_materias - For prof_grupo_materia/3
+# dias, bloques, lecciones - For the basic facts used in dia_bloque_leccion/3
+# disponibilidad_profesores - For disp_prof_dia_bloque_leccion/4
+
 DatabaseSpec:
   tables:
-    - name: constants
+    - name: constantes
       columns:
         - name: name
           type: string
@@ -27,7 +38,7 @@ DatabaseSpec:
         - type: UNIQUE
           columns: [nombre]
 
-    - name: aulas
+    - name: materias
       columns:
         - name: id
           type: integer
@@ -40,6 +51,20 @@ DatabaseSpec:
           columns: [id]
         - type: UNIQUE
           columns: [nombre]
+
+    # - name: aulas
+    #   columns:
+    #     - name: id
+    #       type: integer
+    #       not_null: true
+    #     - name: nombre
+    #       type: string
+    #       not_null: true
+    #   constraints:
+    #     - type: PRIMARY KEY
+    #       columns: [id]
+    #     - type: UNIQUE
+    #       columns: [nombre]
 
     - name: profesores
       columns:
@@ -63,8 +88,8 @@ DatabaseSpec:
         - name: grupo_id
           type: integer
           not_null: true
-        - name: materia
-          type: string
+        - name: materia_id
+          type: integer
           not_null: true
         - name: lecciones
           type: integer
@@ -73,22 +98,19 @@ DatabaseSpec:
         - type: PRIMARY KEY
           columns: [id]
         - type: UNIQUE
-          columns: [grupo_id, materia]
+          columns: [grupo_id, materia_id]
 
     - name: prof_grupo_materias
       columns:
         - name: profesor_id
           type: integer
           not_null: true
-        - name: grupo_id
+        - name: grupo_materias_id
           type: integer
-          not_null: true
-        - name: materia
-          type: string
           not_null: true
       constraints:
         - type: PRIMARY KEY
-          columns: [profesor_id, grupo_id, materia]
+          columns: [profesor_id, grupo_materias_id]
 
     - name: dias
       columns:
@@ -142,6 +164,12 @@ DatabaseSpec:
         table: grupos
         columns: [id]
 
+    - table: grupo_materias
+      columns: [materia_id]
+      references:
+        table: materia
+        columns: [id]
+
     - table: prof_grupo_materias
       columns: [profesor_id]
       references:
@@ -151,7 +179,7 @@ DatabaseSpec:
     - table: prof_grupo_materias
       columns: [grupo_id]
       references:
-        table: grupos
+        table: grupo_materias
         columns: [id]
 
     - table: disponibilidad_profesores
