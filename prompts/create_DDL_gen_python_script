@@ -4,3 +4,7 @@ where the tt.yaml is just an example of a db spec file,
 following the schema described in db_spec_schema.yaml.
 The Python script must be able to create any data base
 defined in a spec YAML conforming to the schema in db_spec_schema.yaml.
+
+Adjust the resulting Python script
+by removing references to Dict, List and using dict, list instead
+and replacing any lines with spaces only to empty lines.
