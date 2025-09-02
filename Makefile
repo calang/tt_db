@@ -30,10 +30,10 @@ help:
 #setup-db:
 #	sudo ./scripts/setupdb.sh
 #
-## target: update_db - update db
-#update-db:
-#	yamltodb --update ${DB_NAME} specs/${DB_NAME}.yaml
-
+# target: data/tt.db - create tt.db
+data/tt.db:	scripts/DDL/tt.sql
+	touch data/tt.db
+	scripts/sqlite3.py data/tt.db <scripts/DDL/tt.sql
 
 # # target: .venv - create local venv
 # .venv:	ALWAYS

@@ -1,4 +1,5 @@
 # To Do
 
-- create a yaml spec file defining the tables to be used
-- ask LLm to create a python script that will use the spec file to create a sqlite DB, on disk, with the structure specified in the yaml file
+- create the DB
+- ask LLM to create a Dash app with one page to edit one of the basic tables in the DB.
+- 
