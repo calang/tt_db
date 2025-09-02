@@ -1,9 +1,14 @@
 #! /usr/bin/env python3
+"""
+Create an Excel file with sheets corresponding to the timetable tables,
+populated with data from the prolog facts.
+"""
 
 import pandas as pd
 
 OUT_FILE = 'data/timetable.xlsx'
 
+#pylint: disable=too-many-locals,too-many-branches,too-many-statements
 def create_timetable_excel():
     """
     Generates an Excel file with sheets corresponding to the timetable tables,
@@ -119,16 +124,21 @@ def create_timetable_excel():
 
     # Process prof_grupo_materias
     gml_map = df_grupo_materias.set_index(['grupo_id', 'materia_id'])['id'].to_dict()
-    
+
     # Add 'resto' to gml_map for groups
     for _, grupo_row in df_grupos.iterrows():
         lecc_por_sem = 40
-        lecciones_sum = df_grupo_materias[df_grupo_materias['grupo_id'] == grupo_row['id']]['lecciones'].sum()
+        lecciones_sum = (
+            df_grupo_materias
+            [df_grupo_materias['grupo_id'] == grupo_row['id']]['lecciones'].sum()
+        )
         resto_lecciones = lecc_por_sem - lecciones_sum
         if resto_lecciones > 0:
             resto_id = 100 + grupo_row['id']
             gml_map[(grupo_row['id'], materias_map['resto'])] = resto_id
-            df_grupo_materias.loc[len(df_grupo_materias)] = [resto_id, grupo_row['id'], materias_map['resto'], resto_lecciones]
+            df_grupo_materias.loc[len(df_grupo_materias)] =(
+                [resto_id, grupo_row['id'], materias_map['resto'], resto_lecciones]
+            )
 
 
     prof_grupo_materias_data = []
@@ -161,7 +171,9 @@ def create_timetable_excel():
         for l in df_lecciones['id']:
             disponibilidad.append((profesores_map['alonso'], 'mie', b, l))
     # Rule 4
-    for p in ['melissa', 'jonathan', 'gina', 'audry', 'daleana', 'mayela', 'mjose', 'sol', 'alisson']:
+    for p in [
+        'melissa', 'jonathan', 'gina', 'audry', 'daleana', 'mayela', 'mjose', 'sol', 'alisson'
+    ]:
         for d in df_dias['nombre']:
             for b in df_bloques['numero']:
                 for l in df_lecciones['id']:
@@ -183,7 +195,10 @@ def create_timetable_excel():
         df_dias.to_excel(writer, sheet_name='dias', index=False)
         df_bloques.to_excel(writer, sheet_name='bloques', index=False)
         df_lecciones.to_excel(writer, sheet_name='lecciones', index=False)
-        df_disponibilidad_profesores.to_excel(writer, sheet_name='disponibilidad_profesores', index=False)
+        df_disponibilidad_profesores.to_excel(writer,
+                                              sheet_name='disponibilidad_profesores',
+                                              index=False
+                                              )
 
     print(f"Excel file '{OUT_FILE}' created successfully.")
 
