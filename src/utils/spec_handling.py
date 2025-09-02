@@ -38,7 +38,8 @@ def validate_schema(schema_filename: str):
     Validate a YAML schema
     
     Raises:
-        jsonschema.exceptions.SchemaError: when the contents of the schema_filename is not a valid schema
+        jsonschema.exceptions.SchemaError:
+            when the contents of the schema_filename is not a valid schema
     """
     # load the validation schema
     schema = get_yaml_file_as_dict(schema_filename)
