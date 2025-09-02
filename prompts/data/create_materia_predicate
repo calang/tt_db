@@ -1,0 +1,5 @@
+Create a prolog predicate with facts like
+materia(I:integer, Materia: atom).
+where there is a fact of this form for each materia
+mentioned in the whole script and
+I is a consecutive index starting at 1.
