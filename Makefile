@@ -24,11 +24,11 @@ help:
 
 ## target: install_postgres - install and setup postgres db
 #install-postgres:
-#	sudo ./scripts/install-postgres.sh
+#	sudo ./scripts/Xinstall-postgres.sh
 #
 ## target: setup_db - create db and user
 #setup-db:
-#	sudo ./scripts/setupdb.sh
+#	sudo ./scripts/Xsetupdb.sh
 
 # # target: .venv - create local venv
 # .venv:	ALWAYS
