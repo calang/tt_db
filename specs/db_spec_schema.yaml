@@ -92,19 +92,6 @@ components:
           type: string
       expression:
         type: string
-
-  ForeignKeySpec:
-    type: object
-    properties:
-      schema:
-        type: string
-        default: public
-      table:
-        type: string
-      columns:
-        type: array
-        items:
-          type: string
       references:
         type: object
         properties:
@@ -117,8 +104,34 @@ components:
             type: array
             items:
               type: string
-        required: ['table', 'columns']
-    required: ['table', 'columns', 'references']
+        required: [ 'table', 'columns' ]
+
+  #ForeignKeySpec:
+  #  type: object
+  #  properties:
+  #    schema:
+  #      type: string
+  #      default: public
+  #    table:
+  #      type: string
+  #    columns:
+  #      type: array
+  #      items:
+  #        type: string
+  #    references:
+  #      type: object
+  #      properties:
+  #        schema:
+  #          type: string
+  #          default: public
+  #        table:
+  #          type: string
+  #        columns:
+  #          type: array
+  #          items:
+  #            type: string
+  #      required: ['table', 'columns']
+  #  required: ['table', 'columns', 'references']
 
   # GrantSpec:
   #   type: object

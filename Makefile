@@ -33,7 +33,7 @@ help:
 # target: data/tt.db - create tt.db
 data/tt.db:	scripts/DDL/tt.sql
 	touch data/tt.db
-	scripts/sqlite3.py data/tt.db <scripts/DDL/tt.sql
+	scripts/exe_sqlite.py data/tt.db <scripts/DDL/tt.sql
 
 # # target: .venv - create local venv
 # .venv:	ALWAYS
@@ -51,6 +51,10 @@ update-env:
 # target: rm-env - update conda environment based on latest content of environment.yml file
 rm-env:
 	conda env remove -n ${ENV_NAME}
+
+# target: tests - run all unit tests
+tests:	ALWAYS
+	pytest tests -v
 
 # target: jupl - start jupiter lab server
 jupl:	ALWAYS

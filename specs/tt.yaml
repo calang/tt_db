@@ -99,6 +99,17 @@ DatabaseSpec:
           columns: [id]
         - type: UNIQUE
           columns: [grupo_id, materia_id]
+        - type: FOREIGN KEY
+          columns: [ grupo_id ]
+          references:
+            table: grupos
+            columns: [ id ]
+        - type: FOREIGN KEY
+          columns: [materia_id]
+          references:
+            table: materia
+            columns: [id]
+
 
     - name: prof_grupo_materias
       columns:
@@ -111,6 +122,17 @@ DatabaseSpec:
       constraints:
         - type: PRIMARY KEY
           columns: [profesor_id, grupo_materias_id]
+        - type: FOREIGN KEY
+          columns: [ profesor_id ]
+          references:
+            table: profesores
+            columns: [ id ]
+        - type: FOREIGN KEY
+          columns: [ grupo_materias_id ]
+          references:
+            table: grupo_materias
+            columns: [ id ]
+
 
     - name: dias
       columns:
@@ -156,52 +178,23 @@ DatabaseSpec:
       constraints:
         - type: PRIMARY KEY
           columns: [profesor_id, dia, bloque, leccion]
-
-  foreign_keys:
-    - table: grupo_materias
-      columns: [grupo_id]
-      references:
-        table: grupos
-        columns: [id]
-
-    - table: grupo_materias
-      columns: [materia_id]
-      references:
-        table: materia
-        columns: [id]
-
-    - table: prof_grupo_materias
-      columns: [profesor_id]
-      references:
-        table: profesores
-        columns: [id]
-
-    - table: prof_grupo_materias
-      columns: [grupo_id]
-      references:
-        table: grupo_materias
-        columns: [id]
-
-    - table: disponibilidad_profesores
-      columns: [profesor_id]
-      references:
-        table: profesores
-        columns: [id]
-
-    - table: disponibilidad_profesores
-      columns: [dia]
-      references:
-        table: dias
-        columns: [nombre]
-
-    - table: disponibilidad_profesores
-      columns: [bloque]
-      references:
-        table: bloques
-        columns: [numero]
-
-    - table: disponibilidad_profesores
-      columns: [leccion]
-      references:
-        table: lecciones
-        columns: [id]
+        - type: FOREIGN KEY
+          columns: [ profesor_id ]
+          references:
+            table: profesores
+            columns: [ id ]
+        - type: FOREIGN KEY
+          columns: [ dia ]
+          references:
+            table: dias
+            columns: [ nombre ]
+        - type: FOREIGN KEY
+          columns: [ bloque ]
+          references:
+            table: bloques
+            columns: [ numero ]
+        - type: FOREIGN KEY
+          columns: [ leccion ]
+          references:
+            table: lecciones
+            columns: [ id ]
