@@ -66,6 +66,10 @@ lint:	ALWAYS
 		`find scripts -name '*.py' -print` \
 		`find src -name '*.py' -print`
 
+# target: run - run the web app
+run:
+	src/timetable_db_app.py
+
 # target: tests - run all unit tests
 tests:	ALWAYS
 	pytest tests -v

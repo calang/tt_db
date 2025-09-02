@@ -1,0 +1,14 @@
+Extend this Python Dash application to include
+several tabs, where each tab contains a page allowing
+CRUD operations on a different table in the database described
+by the tt.sql script.
+There should be one tab for each of the tables in tt.sql.
+The application should use the same layout as the example application.
+
+In addition, the tabs corresponding to tables that have any foreign key
+for the foreign key fields, should show a drop-down list of values
+from the referred table.  These tabs should also have a button
+allowing the navigation to the tab corresponding to the referred table.
+
+
+
