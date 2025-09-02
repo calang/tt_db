@@ -6,6 +6,7 @@
     grupo/2,
     % aula/2,
     prof/2,
+    materia/2,
     grupo_materia_lecciones/4,
     prof_grupo_materia/3,
     disp_prof_dia_bloque_leccion/4,
@@ -55,6 +56,21 @@ prof(9, melissa).
 prof(10, mjose).
 prof(11, mpaula).
 prof(12, sol).
+
+% materia(?Id:int, ?Materia:atom).
+materia(1, edfís).
+materia(2, infor).
+materia(3, inglés).
+materia(4, música).
+materia(5, resto_sol).
+materia(6, arte).
+materia(7, ciencias).
+materia(8, español).
+materia(9, estsoc).
+materia(10, ética).
+materia(11, mate).
+materia(12, francés).
+materia(13, resto).
 
 % grupo_materia_lecciones(+Id:int, +Grupo:atomic, ?Materia:atom, ?Cant_lecciones:int)
 %
