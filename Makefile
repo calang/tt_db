@@ -29,11 +29,6 @@ help:
 ## target: setup_db - create db and user
 #setup-db:
 #	sudo ./scripts/setupdb.sh
-#
-# target: data/tt.db - create tt.db
-data/tt.db:	scripts/DDL/tt.sql
-	touch data/tt.db
-	scripts/exe_sqlite.py data/tt.db <scripts/DDL/tt.sql
 
 # # target: .venv - create local venv
 # .venv:	ALWAYS
@@ -51,6 +46,21 @@ update-env:
 # target: rm-env - update conda environment based on latest content of environment.yml file
 rm-env:
 	conda env remove -n ${ENV_NAME}
+
+# target: scripts/DDL/tt.sql - script to create tt.db
+scripts/DDL/tt.sql:	specs/tt.yaml scripts/DDL/yaml2sql.py
+	scripts/DDL/yaml2sql.py specs/tt.yaml >scripts/DDL/tt.sql
+
+# target: data/tt.db - create tt.db
+data/tt.db:	scripts/DDL/tt.sql scripts/exe_sqlite.py
+	touch data/tt.db
+	scripts/exe_sqlite.py data/tt.db <scripts/DDL/tt.sql
+
+# target: lint - flag any unclear python code
+lint:	ALWAYS
+	pylint \
+		`find scripts -name '*.py' -print` \
+		`find src -name '*.py' -print`
 
 # target: tests - run all unit tests
 tests:	ALWAYS

@@ -1,4 +1,5 @@
 -- Generated SQLite DDL
+PRAGMA encoding = 'UTF-8';
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE constantes (
@@ -34,13 +35,17 @@ CREATE TABLE grupo_materias (
     materia_id INTEGER NOT NULL,
     lecciones INTEGER NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (grupo_id, materia_id)
+    UNIQUE (grupo_id, materia_id),
+    FOREIGN KEY (grupo_id) REFERENCES grupos(id),
+    FOREIGN KEY (materia_id) REFERENCES materia(id)
     );
 
 CREATE TABLE prof_grupo_materias (
     profesor_id INTEGER NOT NULL,
     grupo_materias_id INTEGER NOT NULL,
-    PRIMARY KEY (profesor_id, grupo_materias_id)
+    PRIMARY KEY (profesor_id, grupo_materias_id),
+    FOREIGN KEY (profesor_id) REFERENCES profesores(id),
+    FOREIGN KEY (grupo_materias_id) REFERENCES grupo_materias(id)
     );
 
 CREATE TABLE dias (
@@ -63,14 +68,10 @@ CREATE TABLE disponibilidad_profesores (
     dia TEXT NOT NULL,
     bloque INTEGER NOT NULL,
     leccion TEXT NOT NULL,
-    PRIMARY KEY (profesor_id, dia, bloque, leccion)
+    PRIMARY KEY (profesor_id, dia, bloque, leccion),
+    FOREIGN KEY (profesor_id) REFERENCES profesores(id),
+    FOREIGN KEY (dia) REFERENCES dias(nombre),
+    FOREIGN KEY (bloque) REFERENCES bloques(numero),
+    FOREIGN KEY (leccion) REFERENCES lecciones(id)
     );
 
-ALTER TABLE grupo_materias ADD FOREIGN KEY (grupo_id) REFERENCES grupos(id);
-ALTER TABLE grupo_materias ADD FOREIGN KEY (materia_id) REFERENCES materia(id);
-ALTER TABLE prof_grupo_materias ADD FOREIGN KEY (profesor_id) REFERENCES profesores(id);
-ALTER TABLE prof_grupo_materias ADD FOREIGN KEY (grupo_id) REFERENCES grupo_materias(id);
-ALTER TABLE disponibilidad_profesores ADD FOREIGN KEY (profesor_id) REFERENCES profesores(id);
-ALTER TABLE disponibilidad_profesores ADD FOREIGN KEY (dia) REFERENCES dias(nombre);
-ALTER TABLE disponibilidad_profesores ADD FOREIGN KEY (bloque) REFERENCES bloques(numero);
-ALTER TABLE disponibilidad_profesores ADD FOREIGN KEY (leccion) REFERENCES lecciones(id);

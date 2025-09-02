@@ -37,7 +37,7 @@ def generate_column_def(column: dict[str, Any]) -> str:
 
     return ' '.join(parts)
 
-def generate_constraint(constraint: dict[str, Any], table_name: str) -> str:
+def generate_constraint(constraint: dict) -> str:
     """Generate SQLite constraint definition from spec."""
     constraint_type = constraint['type']
 
@@ -48,15 +48,13 @@ def generate_constraint(constraint: dict[str, Any], table_name: str) -> str:
     if constraint_type == 'CHECK':
         return f"CHECK ({constraint['expression']})"
 
+    if constraint_type == 'FOREIGN KEY':
+        columns = ', '.join(constraint['columns'])
+        ref_table = constraint['references']['table']
+        ref_cols = ', '.join(constraint['references']['columns'])
+        return f"FOREIGN KEY ({columns}) REFERENCES {ref_table}({ref_cols})"
+
     return ''
-
-def generate_foreign_key(fk: dict[str, Any]) -> str:
-    """Generate SQLite foreign key definition from spec."""
-    columns = ', '.join(fk['columns'])
-    ref_table = fk['references']['table']
-    ref_columns = ', '.join(fk['references']['columns'])
-
-    return f"FOREIGN KEY ({columns}) REFERENCES {ref_table}({ref_columns})"
 
 def generate_create_table(table: dict[str, Any]) -> str:
     """Generate CREATE TABLE statement from spec."""
@@ -68,7 +66,7 @@ def generate_create_table(table: dict[str, Any]) -> str:
     # Add table constraints
     if 'constraints' in table:
         for constraint in table['constraints']:
-            constraint_def = generate_constraint(constraint, table['name'])
+            constraint_def = generate_constraint(constraint)
             if constraint_def:
                 column_defs.append(constraint_def)
 
@@ -77,20 +75,6 @@ def generate_create_table(table: dict[str, Any]) -> str:
 
     return '\n    '.join(parts)
 
-def generate_foreign_keys(spec: dict[str, Any]) -> list[str]:
-    """Generate ALTER TABLE statements for foreign keys."""
-    if 'foreign_keys' not in spec:
-        return []
-
-    fk_statements = []
-    for fk in spec['foreign_keys']:
-        table_name = fk['table']
-        fk_def = generate_foreign_key(fk)
-        stmt = f"ALTER TABLE {table_name} ADD {fk_def};"
-        fk_statements.append(stmt)
-
-    return fk_statements
-
 def generate_sqlite_ddl(spec_file: Path) -> str:
     """Generate complete SQLite DDL from spec file."""
     with open(spec_file, encoding='utf-8') as f:
@@ -98,6 +82,7 @@ def generate_sqlite_ddl(spec_file: Path) -> str:
 
     statements = [
         "-- Generated SQLite DDL",
+        "PRAGMA encoding = 'UTF-8';",
         "PRAGMA foreign_keys = ON;",
         ""
     ]
@@ -107,24 +92,25 @@ def generate_sqlite_ddl(spec_file: Path) -> str:
         statements.append(generate_create_table(table))
         statements.append("")
 
-    # Add foreign keys
-    statements.extend(generate_foreign_keys(spec))
-
     return '\n'.join(statements)
 
-def main():
+def main() -> None:
     """Main logic"""
     if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <spec_file.yaml>")
+        print(f"Usage: {sys.argv[0]} <spec_file.yaml>", file=sys.stderr)
         sys.exit(1)
 
     spec_file = Path(sys.argv[1])
     if not spec_file.exists():
-        print(f"Error: File {spec_file} not found")
+        print(f"Error: File {spec_file} not found", file=sys.stderr)
         sys.exit(1)
 
-    sql = generate_sqlite_ddl(spec_file)
-    print(sql)
+    try:
+        sql = generate_sqlite_ddl(spec_file)
+        print(sql, flush=True)
+    except (yaml.YAMLError, UnicodeError) as e:
+        print(f"Error processing YAML file: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
