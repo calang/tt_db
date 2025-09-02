@@ -1,4 +1,3 @@
--- Generated SQLite DDL
 PRAGMA encoding = 'UTF-8';
 PRAGMA foreign_keys = ON;
 
@@ -37,7 +36,7 @@ CREATE TABLE grupo_materias (
     PRIMARY KEY (id),
     UNIQUE (grupo_id, materia_id),
     FOREIGN KEY (grupo_id) REFERENCES grupos(id),
-    FOREIGN KEY (materia_id) REFERENCES materia(id)
+    FOREIGN KEY (materia_id) REFERENCES materias(id)
     );
 
 CREATE TABLE prof_grupo_materias (

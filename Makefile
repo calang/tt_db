@@ -52,9 +52,9 @@ scripts/DDL/tt.sql:	specs/tt.yaml scripts/DDL/yaml2sql.py
 	scripts/DDL/yaml2sql.py specs/tt.yaml >scripts/DDL/tt.sql
 
 # target: data/tt.db - create tt.db
-data/tt.db:	scripts/DDL/tt.sql scripts/exe_sqlite.py
-	touch data/tt.db
-	scripts/exe_sqlite.py data/tt.db <scripts/DDL/tt.sql
+data/tt.db:	scripts/data/prolog_facts_to_sqlite.py specs/timetable_base.pl scripts/DDL/tt.sql
+	# $^: all requirements, then $@: target
+	$^ $@
 
 # target: data/timetable.xlsx - create tt.db
 data/timetable.xlsx:	scripts/data/create_timetable_excel.py
