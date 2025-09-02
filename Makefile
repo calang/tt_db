@@ -56,6 +56,10 @@ data/tt.db:	scripts/DDL/tt.sql scripts/exe_sqlite.py
 	touch data/tt.db
 	scripts/exe_sqlite.py data/tt.db <scripts/DDL/tt.sql
 
+# target: data/timetable.xlsx - create tt.db
+data/timetable.xlsx:	scripts/data/create_timetable_excel.py
+	scripts/data/create_timetable_excel.py
+
 # target: lint - flag any unclear python code
 lint:	ALWAYS
 	pylint \
