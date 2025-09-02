@@ -8,12 +8,12 @@ import sqlite3
 import sys
 
 
-
 # con = sqlite3.connect("tutorial.db")
 # cur = con.cursor()
 # cur.execute("CREATE TABLE movie(title, year, score)")
 
 def run_script(db_file: Path):
+    """Run the commands in stdin, and apply them to db_file"""
     # read commands
     f = sys.stdin.read()
     commands = re.split(r';\s*(?=\n|$)', f, maxsplit=0, flags=re.DOTALL)
@@ -30,13 +30,12 @@ def run_script(db_file: Path):
         print(command)
         try:
             with con:
-                result = con.execute(command)
-            print(result)
-        except Exception as e:
+                con.execute(command)
+        except Exception as e:  #pylint: disable=broad-exception-caught
             print(f"Error: {str(e)}")
 
     # close the connection
-    con.close
+    con.close()
 
 
 def main():
@@ -49,12 +48,10 @@ def main():
     if not db_file.exists():
         print(f"Error: File {db_file} not found")
         sys.exit(1)
-    
+
     run_script(db_file)
     print(f"Done creating {db_file}")
 
 
 if __name__ == '__main__':
     main()
-
-
