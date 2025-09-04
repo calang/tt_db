@@ -264,6 +264,21 @@ def render_tab_content(tab):
         html.Div(id={'type': 'output-message', 'table': tab},
                  style={'color': 'red', 'padding': '10px'}),
 
+        html.Div([
+            html.Label("Rows per page: ", style={'marginRight': '10px'}),
+            dcc.Dropdown(
+                id={'type': 'page-size-dropdown', 'table': tab},
+                options=[
+                    {'label': '10', 'value': 10},
+                    {'label': '20', 'value': 20},
+                    {'label': '50', 'value': 50},
+                    {'label': '100', 'value': 100}
+                ],
+                value=10,
+                style={'width': '100px', 'display': 'inline-block'}
+            )
+        ], style={'padding': '10px', 'display': 'flex', 'alignItems': 'center'}),
+
         dash_table.DataTable(
             id={'type': 'data-table', 'table': tab},
             columns=columns,
@@ -272,6 +287,9 @@ def render_tab_content(tab):
             page_action='native',
             page_size=10,
             style_table={'overflowX': 'auto'},
+            filter_action='native',
+            sort_action='native',
+            sort_mode='multi'
         ),
         html.Br(),
 
@@ -303,6 +321,18 @@ def render_tab_content(tab):
 def refresh_tables(_, table_ids):
     """Refreshes all data tables when CRUD operations are performed."""
     return [get_table_data_with_fk_descriptions(table_id['table']) for table_id in table_ids]
+
+# --- Callback for updating page size ---
+@app.callback(
+    Output({'type': 'data-table', 'table': ALL}, 'page_size'),
+    Input({'type': 'page-size-dropdown', 'table': ALL}, 'value'),
+    State({'type': 'data-table', 'table': ALL}, 'id')
+)
+def update_page_size(page_sizes, table_ids):
+    """Updates the page size for each DataTable when the dropdown value changes."""
+    if not page_sizes:
+        return [10] * len(table_ids)
+    return page_sizes
 
 # --- Callback for displaying selected data in input fields ---
 @app.callback(
