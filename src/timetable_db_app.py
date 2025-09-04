@@ -71,6 +71,9 @@ def get_dropdown_options(table_name, id_col, display_col=None):
         df = pd.read_sql_query(query, conn)
 
         # Format options for dropdown
+        # Note: use row.iloc[index] instead of row[col_name]
+        # because when display_col == id_col row[col_name]
+        # returns a two-column Series instead of a single row value
         options = [
             {'label': str(row.iloc[1]),
              'value': row.iloc[0]
