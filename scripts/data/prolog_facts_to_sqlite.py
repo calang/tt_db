@@ -52,7 +52,7 @@ def extract_facts(prolog_file):
     facts['materias'] = [(int(id), name) for id, name in materia_matches]
 
     # Extract dias
-    dia_pattern = r'dia\((\w+)\)'
+    dia_pattern = r'dia\(([a-z]\w*)\)'
     dia_matches = re.findall(dia_pattern, content)
     facts['dias'] = [(day,) for day in dia_matches]
 
