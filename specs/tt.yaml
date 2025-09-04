@@ -107,32 +107,38 @@ DatabaseSpec:
         - type: FOREIGN KEY
           columns: [materia_id]
           references:
-            table: materia
+            table: materias
             columns: [id]
-
 
     - name: prof_grupo_materias
       columns:
         - name: profesor_id
           type: integer
           not_null: true
-        - name: grupo_materias_id
+        - name: grupo_id
+          type: integer
+          not_null: true
+        - name: materia_id
           type: integer
           not_null: true
       constraints:
         - type: PRIMARY KEY
-          columns: [profesor_id, grupo_materias_id]
+          columns: [profesor_id, grupo_id, materia_id]
         - type: FOREIGN KEY
           columns: [ profesor_id ]
           references:
             table: profesores
             columns: [ id ]
         - type: FOREIGN KEY
-          columns: [ grupo_materias_id ]
+          columns: [ grupo_id ]
           references:
-            table: grupo_materias
+            table: grupos
             columns: [ id ]
-
+        - type: FOREIGN KEY
+          columns: [materia_id]
+          references:
+            table: materias
+            columns: [ id ]
 
     - name: dias
       columns:

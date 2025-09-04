@@ -228,24 +228,13 @@ def create_and_load_database(prolog_file, sql_file, db_file):
                 # Find the grupo_materias entry ID
                 try:
                     cursor.execute(
-                        "SELECT id FROM grupo_materias WHERE grupo_id = ? AND materia_id = ?",
-                        (grupo_id, materia_id)
+                        "INSERT INTO prof_grupo_materias"
+                        " (profesor_id, grupo_id, materia_id) VALUES (?, ?, ?)",
+                        (profesor_id, grupo_id, materia_id)
                     )
-                    result = cursor.fetchone()
-                    if result:
-                        grupo_materias_id = result[0]
-                        # Insert into prof_grupo_materias
-                        try:
-                            cursor.execute(
-                                "INSERT INTO prof_grupo_materias"
-                                " (profesor_id, grupo_materias_id) VALUES (?, ?)",
-                                (profesor_id, grupo_materias_id)
-                            )
-                        except sqlite3.IntegrityError:
-                            pass  # Skip duplicate entries
-                except sqlite3.Error as e:
+                except sqlite3.IntegrityError:
                     print(
-                        f"Error processing prof_grupo_materia for"
+                        f"IntegrityError processing prof_grupo_materia for"
                         f" {profesor}, {grupo}, {materia}: {e}",
                         file=sys.stderr
                     )
@@ -293,7 +282,7 @@ def create_and_load_database(prolog_file, sql_file, db_file):
                                         " (profesor_id, dia, bloque, leccion) VALUES (?, ?, ?, ?)",
                                         (prof_id, dia, bloque, leccion)
                                     )
-                                except sqlite3.IntegrityError:
+                                except sqlite3.IntegrityError as e:
                                     print(
                                         f"IntegrityError inserting disponibilidad_profesores for"
                                         f" {prof_id}, {dia}, {bloque}, {leccion}: {e}",
