@@ -51,29 +51,32 @@ CREATE TABLE prof_grupo_materias (
     );
 
 CREATE TABLE dias (
+    id INTEGER NOT NULL,
     nombre TEXT NOT NULL,
-    PRIMARY KEY (nombre)
+    PRIMARY KEY (id)
     );
 
 CREATE TABLE bloques (
-    numero INTEGER NOT NULL,
-    PRIMARY KEY (numero)
+    id INTEGER NOT NULL,
+    nombre INTEGER NOT NULL,
+    PRIMARY KEY (id)
     );
 
 CREATE TABLE lecciones (
-    id TEXT NOT NULL,
+    id INTEGER NOT NULL,
+    nombre TEXT NOT NULL,
     PRIMARY KEY (id)
     );
 
 CREATE TABLE disponibilidad_profesores (
     profesor_id INTEGER NOT NULL,
-    dia TEXT NOT NULL,
-    bloque INTEGER NOT NULL,
-    leccion TEXT NOT NULL,
-    PRIMARY KEY (profesor_id, dia, bloque, leccion),
+    dia_id INTEGER NOT NULL,
+    bloque_id INTEGER NOT NULL,
+    leccion_id INTEGER NOT NULL,
+    PRIMARY KEY (profesor_id, dia_id, bloque_id, leccion_id),
     FOREIGN KEY (profesor_id) REFERENCES profesores(id),
-    FOREIGN KEY (dia) REFERENCES dias(nombre),
-    FOREIGN KEY (bloque) REFERENCES bloques(numero),
-    FOREIGN KEY (leccion) REFERENCES lecciones(id)
+    FOREIGN KEY (dia_id) REFERENCES dias(id),
+    FOREIGN KEY (bloque_id) REFERENCES bloques(id),
+    FOREIGN KEY (leccion_id) REFERENCES lecciones(id)
     );
 

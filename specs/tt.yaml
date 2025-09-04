@@ -142,25 +142,34 @@ DatabaseSpec:
 
     - name: dias
       columns:
+        - name: id
+          type: integer
+          not_null: true
         - name: nombre
           type: string
           not_null: true
       constraints:
         - type: PRIMARY KEY
-          columns: [nombre]
+          columns: [id]
 
     - name: bloques
       columns:
-        - name: numero
+        - name: id
+          type: integer
+          not_null: true
+        - name: nombre
           type: integer
           not_null: true
       constraints:
         - type: PRIMARY KEY
-          columns: [numero]
+          columns: [id]
 
     - name: lecciones
       columns:
         - name: id
+          type: integer
+          not_null: true
+        - name: nombre
           type: string
           not_null: true
       constraints:
@@ -172,35 +181,35 @@ DatabaseSpec:
         - name: profesor_id
           type: integer
           not_null: true
-        - name: dia
-          type: string
-          not_null: true
-        - name: bloque
+        - name: dia_id
           type: integer
           not_null: true
-        - name: leccion
-          type: string
+        - name: bloque_id
+          type: integer
+          not_null: true
+        - name: leccion_id
+          type: integer
           not_null: true
       constraints:
         - type: PRIMARY KEY
-          columns: [profesor_id, dia, bloque, leccion]
+          columns: [profesor_id, dia_id, bloque_id, leccion_id]
         - type: FOREIGN KEY
           columns: [ profesor_id ]
           references:
             table: profesores
             columns: [ id ]
         - type: FOREIGN KEY
-          columns: [ dia ]
+          columns: [ dia_id ]
           references:
             table: dias
-            columns: [ nombre ]
+            columns: [ id ]
         - type: FOREIGN KEY
-          columns: [ bloque ]
+          columns: [ bloque_id ]
           references:
             table: bloques
-            columns: [ numero ]
+            columns: [ id ]
         - type: FOREIGN KEY
-          columns: [ leccion ]
+          columns: [ leccion_id ]
           references:
             table: lecciones
             columns: [ id ]

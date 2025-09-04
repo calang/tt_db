@@ -52,19 +52,19 @@ def extract_facts(prolog_file):
     facts['materias'] = [(int(id), name) for id, name in materia_matches]
 
     # Extract dias
-    dia_pattern = r'dia\(([a-z]\w*)\)'
+    dia_pattern = r'dia\((\d+),\s*(\w+)\)'
     dia_matches = re.findall(dia_pattern, content)
-    facts['dias'] = [(day,) for day in dia_matches]
+    facts['dias'] = [(int(id), name) for id, name in dia_matches]
 
     # Extract bloques
-    bloque_pattern = r'bloque\((\d+)\)'
+    bloque_pattern = r'bloque\((\d+),\s*(\d+)\)'
     bloque_matches = re.findall(bloque_pattern, content)
-    facts['bloques'] = [(int(bloque),) for bloque in bloque_matches]
+    facts['bloques'] = [(int(id), int(nombre)) for id, nombre in bloque_matches]
 
     # Extract lecciones
-    leccion_pattern = r'leccion\(([a-z]\w*)\)'
+    leccion_pattern = r'leccion\((\d+),\s*(\w+)\)'
     leccion_matches = re.findall(leccion_pattern, content)
-    facts['lecciones'] = [(leccion,) for leccion in leccion_matches]
+    facts['lecciones'] = [(int(id), name) for id, name in leccion_matches]
 
     # Extract grupo_materia_lecciones
     gml_pattern = r'grupo_materia_lecciones\((\d+),\s*(\w+|\d+),\s*(\w+),\s*(\d+)\)'
@@ -152,7 +152,7 @@ def create_and_load_database(prolog_file, sql_file, db_file):
         # Insert dias
         try:
             cursor.executemany(
-                "INSERT INTO dias (nombre) VALUES (?)",
+                "INSERT INTO dias (id, nombre) VALUES (?, ?)",
                 facts['dias']
             )
         except sqlite3.Error as e:
@@ -162,7 +162,7 @@ def create_and_load_database(prolog_file, sql_file, db_file):
         # Insert bloques
         try:
             cursor.executemany(
-                "INSERT INTO bloques (numero) VALUES (?)",
+                "INSERT INTO bloques (id, nombre) VALUES (?, ?)",
                 facts['bloques']
             )
         except sqlite3.Error as e:
@@ -172,7 +172,7 @@ def create_and_load_database(prolog_file, sql_file, db_file):
         # Insert lecciones
         try:
             cursor.executemany(
-                "INSERT INTO lecciones (id) VALUES (?)",
+                "INSERT INTO lecciones (id, nombre) VALUES (?, ?)",
                 facts['lecciones']
             )
         except sqlite3.Error as e:
@@ -186,6 +186,9 @@ def create_and_load_database(prolog_file, sql_file, db_file):
 
         materia_mapping = {nombre: id for id, nombre in facts['materias']}
         profesor_mapping = {nombre: id for id, nombre in facts['profesores']}
+        dia_mapping = {nombre: id for id, nombre in facts['dias']}
+        bloque_mapping = {nombre: id for id, nombre in facts['bloques']}
+        leccion_mapping = {nombre: id for id, nombre in facts['lecciones']}
 
         # Insert grupo_materias with proper foreign keys
         for gid, grupo, materia, lecciones in facts['grupo_materias']:
@@ -241,18 +244,18 @@ def create_and_load_database(prolog_file, sql_file, db_file):
                     raise
 
         # Create disponibilidad_profesores entries
-        # Extract disp_prof_dia_bloque_leccion rules
+        # Extract disp_prof_dia_bloque_leccion rules from timetable_base.pl
         disp_patterns = [
-            # Rule 1: angie on Wednesday for all blocks and lessons
-            (profesor_mapping.get('angie'), 'mie', [1, 2, 3, 4], ['a', 'b']),
-            # Rule 2: mpaula on Mon, Tue, Thu for all blocks and lessons
-            (profesor_mapping.get('mpaula'), ['lun', 'mar', 'jue'], [1, 2, 3, 4], ['a', 'b']),
-            # Rule 3: alonso on Wednesday for all blocks and lessons
-            (profesor_mapping.get('alonso'), 'mie', [1, 2, 3, 4], ['a', 'b']),
+            # Rule 1: angie on Wednesday (id=3) for all blocks and lessons
+            (profesor_mapping.get('angie'), [3], [1, 2, 3, 4], [1, 2]),
+            # Rule 2: mpaula on Mon(1), Tue(2), Thu(4) for all blocks and lessons
+            (profesor_mapping.get('mpaula'), [1, 2, 4], [1, 2, 3, 4], [1, 2]),
+            # Rule 3: alonso on Wednesday (id=3) for all blocks and lessons
+            (profesor_mapping.get('alonso'), [3], [1, 2, 3, 4], [1, 2]),
             # Rule 4: All other professors for all days, blocks, and lessons
             ([profesor_mapping.get(p) for p in ['melissa', 'jonathan', 'gina', 'audry', 'daleana',
                                                 'mayela', 'mjose', 'sol', 'alisson']],
-             ['lun', 'mar', 'mie', 'jue', 'vie'], [1, 2, 3, 4], ['a', 'b'])
+             [1, 2, 3, 4, 5], [1, 2, 3, 4], [1, 2])
         ]
 
         # Process the patterns
@@ -272,27 +275,27 @@ def create_and_load_database(prolog_file, sql_file, db_file):
 
             # Generate all combinations
             for prof_id in prof_ids:
-                for dia in dias:
-                    for bloque in bloques:
-                        for leccion in lecciones:
+                for dia_id in dias:
+                    for bloque_id in bloques:
+                        for leccion_id in lecciones:
                             if prof_id is not None:
                                 try:
                                     cursor.execute(
                                         "INSERT INTO disponibilidad_profesores"
-                                        " (profesor_id, dia, bloque, leccion) VALUES (?, ?, ?, ?)",
-                                        (prof_id, dia, bloque, leccion)
+                                        " (profesor_id, dia_id, bloque_id, leccion_id) VALUES (?, ?, ?, ?)",
+                                        (prof_id, dia_id, bloque_id, leccion_id)
                                     )
                                 except sqlite3.IntegrityError as e:
                                     print(
                                         f"IntegrityError inserting disponibilidad_profesores for"
-                                        f" {prof_id}, {dia}, {bloque}, {leccion}: {e}",
+                                        f" {prof_id}, {dia_id}, {bloque_id}, {leccion_id}: {e}",
                                         file=sys.stderr
                                     )
                                     raise
                                 except sqlite3.Error as e:
                                     print(
                                         f"Error inserting disponibilidad_profesores for"
-                                        f" {prof_id}, {dia}, {bloque}, {leccion}: {e}",
+                                        f" {prof_id}, {dia_id}, {bloque_id}, {leccion_id}: {e}",
                                         file=sys.stderr
                                     )
                                     raise

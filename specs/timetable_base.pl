@@ -11,9 +11,9 @@
     prof_grupo_materia/3,
     disp_prof_dia_bloque_leccion/4,
     dia_bloque_leccion/3,
-    dia/1,
-    bloque/1,
-    leccion/1
+    dia/2,
+    bloque/2,
+    leccion/2
 ]).
 
 % lecc_por_sem(?LS:int).
@@ -264,40 +264,40 @@ prof_grupo_materia(daleana, 6, resto).
 % Existe para un Dia un Bloque con una Leccion.
 
 dia_bloque_leccion(Dia, Bloque, Leccion) :-
-    dia(Dia),
-    bloque(Bloque),
-    leccion(Leccion).
+    dia(Dia, _),
+    bloque(Bloque, _),
+    leccion(Leccion, _).
 
-dia(lun).
-dia(mar).
-dia(mie).
-dia(jue).
-dia(vie).
+dia(1, lun).
+dia(2, mar).
+dia(3, mie).
+dia(4, jue).
+dia(5, vie).
 
-bloque(1).
-bloque(2).
-bloque(3).
-bloque(4).
+bloque(1, 1).
+bloque(2, 2).
+bloque(3, 3).
+bloque(4, 4).
 
-leccion(a).
-leccion(b).
+leccion(1, a).
+leccion(2, b).
 
 
 % disp_prof_dia_bloque_leccion(?Prof:atom, ?Dia:atom, ?Bloque:atom, ?Leccion:atom).
 %
 % Prof es un profesor, disponible el Dia, en Bloque y Leccion.
-disp_prof_dia_bloque_leccion(angie, mie, B, L) :-
+disp_prof_dia_bloque_leccion(angie, 3, B, L) :-
     member(B, [1,2,3,4]),
-    member(L, [a,b]).
+    member(L, [1,2]).
 disp_prof_dia_bloque_leccion(mpaula, D, B, L) :-
-    member(D, [lun,mar,jue]),
-    bloque(B),
-    leccion(L).
-disp_prof_dia_bloque_leccion(alonso, mie, B, L) :-
-    bloque(B),
-    leccion(L).
+    member(D, [1,2,4]),
+    bloque(B, _),
+    leccion(L, _).
+disp_prof_dia_bloque_leccion(alonso, 3, B, L) :-
+    bloque(B, _),
+    leccion(L, _).
 disp_prof_dia_bloque_leccion(P, D, B, L) :-
     member(P, [melissa, jonathan, gina, audry, daleana, mayela, mjose, sol, alisson]),
-    dia(D),
-    bloque(B),
-    leccion(L).
+    dia(D, _),
+    bloque(B, _),
+    leccion(L, _).
