@@ -8,6 +8,7 @@ Includes tabs for all tables in the database with foreign key handling.
 import os
 import sqlite3
 import pprint as pp
+import sys
 
 import dash
 from dash import dcc, html, Input, Output, State, dash_table, callback, ALL
@@ -58,17 +59,29 @@ def get_table_data(table_name):
 
 def get_dropdown_options(table_name, id_col, display_col=None):
     """Get options for dropdowns from a table"""
+    print(f"get_dropdown_options: {table_name=}, {id_col=}, {display_col=}", file=sys.stderr)
     conn = get_db_connection()
     try:
         if display_col is None:
             display_col = id_col
+        print(f"{display_col=}")
         
         # Get data for the dropdown
         query = f"SELECT {id_col}, {display_col} FROM {table_name}"
         df = pd.read_sql_query(query, conn)
+        print(f"get_dropdown_options: df:\n{df}", file=sys.stderr)
+        # print("df.iterrows():")
+        # pp.pprint([row for row in df.iterrows()])
         
         # Format options for dropdown
-        options = [{'label': str(row[display_col]), 'value': row[id_col]} for _, row in df.iterrows()]
+        options = [
+            {'label': str(row[1]),
+             'value': row[0]
+             }
+            for _, row in df.iterrows()
+        ]
+        print('options:')
+        pp.pprint(options, stream=sys.stderr)
         return options
     finally:
         conn.close()
