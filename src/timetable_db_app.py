@@ -50,14 +50,14 @@ def get_foreign_keys(table_name):
     finally:
         conn.close()
 
-def get_table_data(table_name):
-    """Get all data from a table"""
-    conn = get_db_connection()
-    try:
-        df = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)
-        return df.to_dict('records')
-    finally:
-        conn.close()
+# def get_table_data(table_name):
+#     """Get all data from a table"""
+#     conn = get_db_connection()
+#     try:
+#         df = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)
+#         return df.to_dict('records')
+#     finally:
+#         conn.close()
 
 def get_table_data_with_fk_descriptions(table_name):
     """Get table data with foreign key descriptions joined in"""
@@ -188,6 +188,14 @@ def render_tab_content(tab):
                     columns.append({'name': desc_col_name, 'id': desc_col_id})
                 break
 
+    # Create mapping for column types to input types
+    col_type_to_input_type = {
+        'integer': 'number',
+        'number': 'number',
+        'text': 'text',
+        'string': 'text'
+    }
+
     # Create input fields for each column
     input_fields = []
     for column in schema:
@@ -236,32 +244,16 @@ def render_tab_content(tab):
 
         else:
             # For regular columns, create appropriate input fields based on data type
-            if col_type in ('integer', 'number'):
-                input_field = html.Div([
-                    html.Label(f"{col_name.replace('_', ' ').title()}:"),
-                    dcc.Input(
-                        id={'type': 'input-field', 'name': col_name},
-                        type='number',
-                        placeholder=f"Enter {col_name.replace('_', ' ')}..."
-                    )
-                ], style={'marginBottom': '10px'})
-            elif col_type in ('text', 'string'):
-                input_field = html.Div([
-                    html.Label(f"{col_name.replace('_', ' ').title()}:"),
-                    dcc.Input(
-                        id={'type': 'input-field', 'name': col_name},
-                        type='text',
-                        placeholder=f"Enter {col_name.replace('_', ' ')}..."
-                    )
-                ], style={'marginBottom': '10px'})
-            else:
-                input_field = html.Div([
-                    html.Label(f"{col_name.replace('_', ' ').title()}:"),
-                    dcc.Input(
-                        id={'type': 'input-field', 'name': col_name},
-                        placeholder=f"Enter {col_name.replace('_', ' ')}..."
-                    )
-                ], style={'marginBottom': '10px'})
+            input_type = col_type_to_input_type.get(col_type, 'text')
+            
+            input_field = html.Div([
+                html.Label(f"{col_name.replace('_', ' ').title()}:"),
+                dcc.Input(
+                    id={'type': 'input-field', 'name': col_name},
+                    type=input_type,
+                    placeholder=f"Enter {col_name.replace('_', ' ')}..."
+                )
+            ], style={'marginBottom': '10px'})
 
         input_fields.append(input_field)
 
