@@ -59,6 +59,45 @@ def get_table_data(table_name):
     finally:
         conn.close()
 
+def get_table_data_with_fk_descriptions(table_name):
+    """Get table data with foreign key descriptions joined in"""
+    conn = get_db_connection()
+    try:
+        # Get foreign key information
+        foreign_keys = get_foreign_keys(table_name)
+        
+        # Start with the base table
+        query = f"SELECT {table_name}.*"
+        from_clause = f"FROM {table_name}"
+        
+        # Add joins for each foreign key that references a table with 'name' or 'nombre'
+        for fk in foreign_keys:
+            ref_table = fk['table']
+            ref_col = fk['to']
+            fk_col = fk['from']
+            
+            # Check if the referenced table has a 'name' or 'nombre' column
+            ref_schema = get_table_schema(ref_table)
+            display_col = None
+            
+            for ref_column in ref_schema:
+                if ref_column['name'].lower() in ['nombre', 'name']:
+                    display_col = ref_column['name']
+                    break
+            
+            if display_col:
+                # Add the display column to the SELECT clause
+                alias = f"{fk_col}_description"
+                query += f", {ref_table}.{display_col} AS {alias}"
+                # Add the LEFT JOIN
+                from_clause += f" LEFT JOIN {ref_table} ON {table_name}.{fk_col} = {ref_table}.{ref_col}"
+        
+        full_query = f"{query} {from_clause}"
+        df = pd.read_sql_query(full_query, conn)
+        return df.to_dict('records')
+    finally:
+        conn.close()
+
 def get_dropdown_options(table_name, id_col, display_col=None):
     """Get options for dropdowns from a table"""
     conn = get_db_connection()
@@ -127,6 +166,27 @@ def render_tab_content(tab):
     for column in schema:
         col_name = column['name']
         columns.append({'name': col_name.replace('_', ' ').title(), 'id': col_name})
+        
+        # Check if this column is a foreign key and add description column right after it
+        for fk in foreign_keys:
+            if fk['from'] == col_name:
+                ref_table = fk['table']
+                
+                # Check if the referenced table has a 'name' or 'nombre' column
+                ref_schema = get_table_schema(ref_table)
+                display_col = None
+                
+                for ref_column in ref_schema:
+                    if ref_column['name'].lower() in ['nombre', 'name']:
+                        display_col = ref_column['name']
+                        break
+                
+                if display_col:
+                    # Add a column for the foreign key description right after the FK column
+                    desc_col_id = f"{col_name}_description"
+                    desc_col_name = f"{col_name.replace('_', ' ').title()} {display_col.title()}"
+                    columns.append({'name': desc_col_name, 'id': desc_col_id})
+                break
 
     # Create input fields for each column
     input_fields = []
@@ -250,7 +310,7 @@ def render_tab_content(tab):
 )
 def refresh_tables(_, table_ids):
     """Refreshes all data tables when CRUD operations are performed."""
-    return [get_table_data(table_id['table']) for table_id in table_ids]
+    return [get_table_data_with_fk_descriptions(table_id['table']) for table_id in table_ids]
 
 # --- Callback for displaying selected data in input fields ---
 @app.callback(
