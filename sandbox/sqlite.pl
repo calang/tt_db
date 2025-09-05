@@ -11,9 +11,9 @@ to verify installation:
 :- use_module(library(prosqlite)).
 
 % create empty the sqlite DB file, if needed
-:- shell('> uniprot.sqlite').
+:- shell('> uniprot.db.sqlite').
 
-:- sqlite_connect('uniprot.sqlite', uniprot).
+:- sqlite_connect('uniprot.db.sqlite', uniprot).
 
 :- sqlite_query('CREATE TABLE movie(title, year, score)', Row).
 
