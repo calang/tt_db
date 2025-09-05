@@ -4,4 +4,6 @@ WD=$(pwd)
 
 export PYTHONPATH=${WD}
 
-[ "$CONDA_DEFAULT_ENV" = "ttdb" ] || conda activate ttdb
+# Vs Code adds conda activate after this script is completed
+# so we don't need to do it twice.
+# [ "$CONDA_DEFAULT_ENV" = "ttdb" ] || conda activate ttdb
