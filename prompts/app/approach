@@ -1,0 +1,8 @@
+using the data stored in the tt.db data base,
+as described by the tt.sql file,
+how would you approach the proyect of writing a program
+that will use that information to produce a timetable of
+professors, materias, days, bloques and lecciones
+that will satisfy the requirements described in tables
+grupo_materias, prof_grupo_materias and disponibilidad_profesores?
+
