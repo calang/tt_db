@@ -50,15 +50,6 @@ def get_foreign_keys(table_name):
     finally:
         conn.close()
 
-# def get_table_data(table_name):
-#     """Get all data from a table"""
-#     conn = get_db_connection()
-#     try:
-#         df = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)
-#         return df.to_dict('records')
-#     finally:
-#         conn.close()
-
 def get_table_data_with_fk_descriptions(table_name):
     """Get table data with foreign key descriptions joined in"""
     conn = get_db_connection()
@@ -211,6 +202,7 @@ def render_tab_content(tab):
                 fk_info = fk
                 break
 
+
         if is_foreign_key:
             # For foreign keys, create a dropdown with options from the referenced table
             ref_table = fk_info['table']
@@ -229,11 +221,21 @@ def render_tab_content(tab):
             dropdown_options = get_dropdown_options(ref_table, ref_col, display_col)
 
             input_field = html.Div([
-                html.Label(f"{col_name.replace('_', ' ').title()}:"),
+                html.Label(
+                    f"{col_name.replace('_', ' ').title()}:",
+                    style={
+                        'width': '180px',
+                        'minWidth': '120px',
+                        'display': 'inline-block',
+                        'marginRight': '8px',
+                        'textAlign': 'right'
+                    }
+                ),
                 dcc.Dropdown(
                     id={'type': 'input-field', 'name': col_name},
                     options=dropdown_options,
-                    placeholder=f"Select {col_name.replace('_', ' ')}..."
+                    placeholder=f"Select {col_name.replace('_', ' ')}...",
+                    style={'width': '350px', 'minWidth': '250px', 'maxWidth': '100%', 'marginLeft': '0px'}
                 ),
                 html.Button(
                     f"Go to {ref_table.replace('_', ' ').title()}",
@@ -245,15 +247,24 @@ def render_tab_content(tab):
         else:
             # For regular columns, create appropriate input fields based on data type
             input_type = col_type_to_input_type.get(col_type, 'text')
-            
             input_field = html.Div([
-                html.Label(f"{col_name.replace('_', ' ').title()}:"),
+                html.Label(
+                    f"{col_name.replace('_', ' ').title()}:",
+                    style={
+                        'width': '180px',
+                        'minWidth': '120px',
+                        'display': 'inline-block',
+                        'marginRight': '8px',
+                        'textAlign': 'right'
+                    }
+                ),
                 dcc.Input(
                     id={'type': 'input-field', 'name': col_name},
                     type=input_type,
-                    placeholder=f"Enter {col_name.replace('_', ' ')}..."
+                    placeholder=f"Enter {col_name.replace('_', ' ')}...",
+                    style={'width': '350px', 'minWidth': '250px', 'maxWidth': '100%', 'marginLeft': '0px'}
                 )
-            ], style={'marginBottom': '10px'})
+            ], style={'marginBottom': '10px', 'display': 'flex', 'alignItems': 'center'})
 
         input_fields.append(input_field)
 
