@@ -1,0 +1,18 @@
+Acting as a System Archtect,
+notice that the current project
+is developed in Linux and is meant to run on a Linux Ubuntu server,
+contains Prolog code, meant to handle rule-based inference using clpfd,
+contains Python code to handle other aspects, like overall data handling and management
+and uses a SQLlite single-file data base.
+
+How do you recommend to integrate this app modules so that
+- once complete it can be conveniently deployed as a web app in a centralized server
+- communication across different modules, writen in either Python, Prolog or Bash scripts
+is both efficient in its execution and easy to manage, from a software management perspective?
+
+Consider alternatives like
+- multi-process Linux pipe communication
+- microservice-based deployment, based on a set of http services
+- any other that happens to be a current popular method to integrate Python and SWI-Prolog modules.
+
+Provide an analysis of different integration options, with comparative pros and cons.
